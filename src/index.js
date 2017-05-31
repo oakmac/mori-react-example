@@ -32,7 +32,7 @@ function render () {
 
     ReactDOM.render(App(window.CURRENT_STATE), rootEl)
 
-    console.log('Render #' + renderCount)
+    // console.log('Render #' + renderCount)
     renderCount = renderCount + 1
   }
   window.requestAnimationFrame(render)
