@@ -8,23 +8,22 @@ class MoriComponent extends Component {
 }
 
 function onChangeTextInput (evt) {
-  let newText = evt.currentTarget.value
+  const newText = evt.currentTarget.value
   window.NEXT_STATE = mori.assoc(window.CURRENT_STATE, 'newTabText', newText)
 }
 
 function clickAddTabBtn (newText, evt) {
   if (newText === '') return
 
-  let currentTabs = mori.get(window.CURRENT_STATE, 'tabs')
-  let newTabs = mori.conj(currentTabs, newText)
-  let newState = mori.assoc(window.CURRENT_STATE, 'tabs', newTabs, 'newTabText', '')
+  const currentTabs = mori.get(window.CURRENT_STATE, 'tabs')
+  const newTabs = mori.conj(currentTabs, newText)
+  const newState = mori.assoc(window.CURRENT_STATE, 'tabs', newTabs, 'newTabText', '')
   window.NEXT_STATE = newState
 }
 
 class AddTabInput extends MoriComponent {
   render () {
-    let txt = this.props.imdata
-
+    const txt = this.props.imdata
     return (
       <div>
         <input type="text" value={txt} onChange={onChangeTextInput} />
@@ -40,11 +39,11 @@ function clickTab (tabName) {
 
 class Tab extends MoriComponent {
   render () {
-    let name = mori.get(this.props.imdata, 'name')
-    let isActive = mori.get(this.props.imdata, 'isActive')
+    const name = mori.get(this.props.imdata, 'name')
+    const isActive = mori.get(this.props.imdata, 'isActive')
     let className = 'tab'
     if (isActive) className += ' active'
-    let clickFn = mori.partial(clickTab, name)
+    const clickFn = mori.partial(clickTab, name)
 
     return (
       <li className={className} onClick={clickFn}>{name}</li>
@@ -53,12 +52,12 @@ class Tab extends MoriComponent {
 }
 
 function App (props) {
-  let activeTab = mori.get(props, 'activeTab')
-  let searchTxt = mori.get(props, 'newTabText')
-  let tabNames = mori.intoArray(mori.get(props, 'tabs'))
-  let tabComponents = tabNames.map(function (tabName) {
-    let tabData = mori.hashMap('name', tabName, 'isActive', tabName === activeTab)
-    return React.createElement(Tab, {imdata: tabData})
+  const activeTab = mori.get(props.imdata, 'activeTab')
+  const searchTxt = mori.get(props.imdata, 'newTabText')
+  const tabNames = mori.intoArray(mori.get(props.imdata, 'tabs'))
+  const tabComponents = tabNames.map(function (tabName, idx) {
+    const tabData = mori.hashMap('name', tabName, 'isActive', tabName === activeTab)
+    return <Tab imdata={tabData} key={idx} />
   })
 
   return (
