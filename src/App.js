@@ -1,40 +1,45 @@
 import React, { Component } from 'react'
 import mori from 'mori'
+import { getCurrentState, setNextState } from './state'
 
 class MoriComponent extends Component {
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate (nextProps, _nextState) {
     return !mori.equals(this.props.imdata, nextProps.imdata)
   }
 }
 
 function onChangeTextInput (evt) {
   const newText = evt.currentTarget.value
-  window.NEXT_STATE = mori.assoc(window.CURRENT_STATE, 'newTabText', newText)
+  const newState = mori.assoc(getCurrentState(), 'newTabText', newText)
+  setNextState(newState)
 }
 
-function clickAddTabBtn (newText, evt) {
+function clickAddTabBtn (newText, _evt) {
   if (newText === '') return
 
-  const currentTabs = mori.get(window.CURRENT_STATE, 'tabs')
+  const currentState = getCurrentState()
+  const currentTabs = mori.get(currentState, 'tabs')
   const newTabs = mori.conj(currentTabs, newText)
-  const newState = mori.assoc(window.CURRENT_STATE, 'tabs', newTabs, 'newTabText', '')
-  window.NEXT_STATE = newState
+  const newState = mori.assoc(currentState, 'tabs', newTabs, 'newTabText', '')
+  setNextState(newState)
 }
 
 class AddTabInput extends MoriComponent {
   render () {
     const txt = this.props.imdata
+    const clickFn = mori.partial(clickAddTabBtn, txt)
     return (
       <div>
         <input type="text" value={txt} onChange={onChangeTextInput} />
-        <button onClick={clickAddTabBtn.bind(null, txt)}>Add Tab</button>
+        <button onClick={clickFn}>Add Tab</button>
       </div>
     )
   }
 }
 
 function clickTab (tabName) {
-  window.NEXT_STATE = mori.assoc(window.CURRENT_STATE, 'activeTab', tabName)
+  const newState = mori.assoc(getCurrentState(), 'activeTab', tabName)
+  setNextState(newState)
 }
 
 class Tab extends MoriComponent {
@@ -45,9 +50,7 @@ class Tab extends MoriComponent {
     if (isActive) className += ' active'
     const clickFn = mori.partial(clickTab, name)
 
-    return (
-      <li className={className} onClick={clickFn}>{name}</li>
-    )
+    return <li className={className} onClick={clickFn}>{name}</li>
   }
 }
 

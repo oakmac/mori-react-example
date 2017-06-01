@@ -1,12 +1,11 @@
-// import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import mori from 'mori'
 import './index.css'
 
-// ----------------------------------------------------------------------------
-// Mori Example
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Render Loop
+// -----------------------------------------------------------------------------
 
 const rootEl = document.getElementById('root')
 
@@ -16,6 +15,7 @@ const initialState = {
   tabs: ['Home', 'Contact Us', 'About', 'Foo', 'Bar']
 }
 
+// set up our initial render
 window.CURRENT_STATE = null
 window.NEXT_STATE = mori.toClj(initialState)
 
@@ -29,7 +29,10 @@ function render () {
     ReactDOM.render(App({imdata: window.CURRENT_STATE}), rootEl)
 
     renderCount = renderCount + 1
+
     // console.log('Render #' + renderCount)
+    // console.log(mori.toJs(window.CURRENT_STATE))
+    // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
   }
   window.requestAnimationFrame(render)
 }
